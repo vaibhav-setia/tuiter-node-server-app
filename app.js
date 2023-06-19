@@ -12,8 +12,12 @@ app.use(
     session({
       secret: "any string",
       resave: false,
-      saveUninitialized: true,
-    })
+      saveUninitialized: false,
+      proxy: true,
+      cookie: {
+        sameSite  : 'none',
+        secure    : true
+    }})
    );
    const CONNECTION_STRING = 'mongodb+srv://naresh:naresh@cluster0.ucnqcns.mongodb.net/?retryWrites=true&w=majority' || 'mongodb://127.0.0.1:27017/tuiter'
 mongoose.connect(CONNECTION_STRING);
