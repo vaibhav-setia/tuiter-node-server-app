@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(
     cors({
       credentials: true,
-      origin: "http://localhost:3000"
+      origin: "https://a6--endearing-halva-ab9ff7.netlify.app/"
     })
    );
 AuthController(app);
