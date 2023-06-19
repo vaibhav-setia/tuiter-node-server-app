@@ -2,22 +2,23 @@ import * as usersDao from "./users-dao.js";
 
 
 const AuthController = (app) => {
-    const register = (req, res) => {
-        const username = req.body.username;
-        const user = usersDao.findUserByUsername(username);
-        if (user) {
-          res.sendStatus(409);
-          return;
-        }
-        const newUser = usersDao.createUser(req.body);
-        req.session["currentUser"] = newUser;
-        res.json(newUser);
-      };
+  const register = async (req, res) => {
+    const user = await usersDao.findUserByUsername(req.body.username);
+    if (user) {
+      res.sendStatus(403);
+      return;
+    }
+    const newUser = await usersDao.createUser(req.body);
+    req.session["currentUser"] = newUser;
+    res.json(newUser);
+  };
+  
      
-      const login = (req, res) => {
+      const login = async (req, res) => {
+        // console.log(req.body)
         const username = req.body.username;
         const password = req.body.password;
-        const user = usersDao.findUserByCredentials(username, password);
+        const user = await usersDao.findUserByCredentials(username, password);
         console.log(user)
         if (user) {
           req.session["currentUser"] = user;
@@ -42,9 +43,11 @@ const AuthController = (app) => {
         res.sendStatus(200);
       };
      
-      const update   = (req, res) => {
-
-        usersDao.updateUser(req.body._id, req.body)
+      const update   = async (req, res) => {
+        console.log(req.body)
+        const newUser = await usersDao.updateUser(req.body._id,req.body);
+        // usersDao.updateUser(req.body._id, req.body)
+        req.session["currentUser"] = newUser;
         res.sendStatus(200);
         };
 

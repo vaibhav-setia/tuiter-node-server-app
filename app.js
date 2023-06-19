@@ -5,6 +5,8 @@ import TuitsController from "./controllers/tuits/tuits-controller.js"
 import cors from 'cors'
 import AuthController from "./users/auth-controller.js";
 import session from "express-session";
+import mongoose from "mongoose";
+// mongoose.connect("mongodb://127.0.0.1:27017/tuiter");
 const app = express()
 app.use(
     session({
@@ -13,12 +15,13 @@ app.use(
       saveUninitialized: true,
     })
    );
-   
+   const CONNECTION_STRING = 'mongodb+srv://naresh:naresh@cluster0.ucnqcns.mongodb.net/?retryWrites=true&w=majority' || 'mongodb://127.0.0.1:27017/tuiter'
+mongoose.connect(CONNECTION_STRING);
 app.use(express.json());
 app.use(
     cors({
       credentials: true,
-      origin: "https://a5--endearing-halva-ab9ff7.netlify.app",
+      origin: "http://localhost:3000"
     })
    );
 AuthController(app);

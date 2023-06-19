@@ -1,10 +1,9 @@
-import posts from "./tuits.js";
-let tuits = posts;
+import * as tuitsDao from './tuits-dao.js'
 
-const createTuit = (req, res) => {
+const createTuit = async (req, res) => {
 
     const newTuit = req.body;
-  newTuit._id = (new Date()).getTime()+'';
+  // newTuit._id = (new Date()).getTime()+'';
   newTuit.likes = 0;
   newTuit.replies = 0;
   newTuit.retuits = 0;
@@ -14,34 +13,39 @@ const createTuit = (req, res) => {
   newTuit.time = "2h";
   newTuit.image="spacex.webp"
   
-  tuits.unshift(newTuit);
-  res.json(newTuit);
+  // tuits.unshift(newTuit);
+  const insertedTuit = await tuitsDao.createTuit(newTuit);
+  res.json(insertedTuit);
+
 //   console.log(tuits);
 
 }
-const findTuits  = (req, res) => {
+const findTuits  = async (req, res) => {
     const topic = req.query.topic
+    const tuits = await tuitsDao.findTuits()
     if(topic) {
       const tuitsOfType = tuits
         .filter(u => u.topic === topic)
       res.json(tuitsOfType)
       return
     }
+
     res.json(tuits)
 }
-const updateTuit = (req, res) => {
+const updateTuit = async (req, res) => {
+  console.log(req.body)
     const tuitdId = req.params.tid;
     const updates = req.body;
-    const tuitIndex = tuits.findIndex((t) => t._id === tuitdId)
-    tuits[tuitIndex] = {...tuits[tuitIndex], ...updates};
-    res.sendStatus(200);
+    // const tuitIndex = tuits.findIndex((t) => t._id === tuitdId)
+    const status = await tuitsDao
+    .updateTuit(tuitdId, updates);
+res.json(status);
 
 }
-const deleteTuit = (req, res) => {
+const deleteTuit = async (req, res) => {
     const tuitdIdToDelete = req.params.tid;
-    tuits = tuits.filter((t) =>
-      t._id !== tuitdIdToDelete);
-    res.sendStatus(200);
+    const status = await tuitsDao.deleteTuit(tuitdIdToDelete);
+    res.json(status);
 }
 
 export default (app) => {
@@ -50,11 +54,3 @@ export default (app) => {
  app.put('/api/tuits/:tid', updateTuit);
  app.delete('/api/tuits/:tid', deleteTuit);
 }
-
-
-
-// implement this
-// implement this
-// implement this
-// implement this
-
